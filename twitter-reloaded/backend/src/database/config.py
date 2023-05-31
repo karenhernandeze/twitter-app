@@ -20,7 +20,7 @@ class Database(metaclass=SingletonMeta):
     def create_connection(cls):
         connection = None
         try:
-            connection = sqlite3.connect(cls.path)
+            connection = sqlite3.connect(cls.path, check_same_thread=False)
             connection.row_factory = sqlite3.Row
             print("Connection to database successful")
         except Error as e:
