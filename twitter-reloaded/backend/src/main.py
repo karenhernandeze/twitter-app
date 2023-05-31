@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database.config import TwitterDB as db
 
+from .routers import tweets_router
+
 
 app = FastAPI(title="Twitter Reloaded", version="0.1.0")
 
@@ -15,9 +17,17 @@ app.add_middleware(
 )
 
 @app.on_event('shutdown')
-async def shutdown_db_client():
+def shutdown_db_client():
     db.close_connection()
 
 @app.get("/")
-async def root():
+def root():
     return {"messsage" : "Welcome!"}
+
+app.include_router(router=tweets_router.router)
+
+# import uvicorn
+
+
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=8546)
