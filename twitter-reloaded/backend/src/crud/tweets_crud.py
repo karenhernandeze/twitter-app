@@ -2,17 +2,17 @@ from ..database.config import TwitterDB as db
 
 
 class TweetsCRUD:   
-    def create_tweet(cls, content: str, userId: int):
+    def create_tweet(userId: int, content: str):
         query = """
-        INSERT INTO tweets (content, userId)
+        INSERT INTO tweets (userId, content)
         VALUES (?, ?)
         RETURNING *;
         """
-        values = (content, userId)
+        values = (userId, content)
         row = db.execute_query_values(query, values)
         return row
     
-    def get_latest_tweets(cls):
+    def get_latest_tweets():
         query = """
         SELECT * FROM tweets
         ORDER BY createdAt DESC
@@ -21,7 +21,7 @@ class TweetsCRUD:
         rows = db.execute_query(query)
         return rows
     
-    def get_tweets_by_offset(cls, offset: int):
+    def get_tweets_by_offset(offset: int):
         query = f"""
         SELECT * FROM tweets
         ORDER BY createdAt DESC
@@ -30,7 +30,7 @@ class TweetsCRUD:
         rows = db.execute_query(query)
         return rows
     
-    def get_all_tweets(cls):
+    def get_all_tweets():
         query = """
         SELECT * FROM tweets
         ORDER BY createdAt DESC;
