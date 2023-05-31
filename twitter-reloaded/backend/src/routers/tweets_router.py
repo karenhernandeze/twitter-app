@@ -51,7 +51,7 @@ def latest(username: str):
         },
     )
     
-@router.get(
+@router.post(
     "/{username}/tweetOffset",
     status_code=status.HTTP_200_OK,
     response_description="Get tweets by offset",
