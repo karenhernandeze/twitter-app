@@ -30,6 +30,7 @@ def generate_db():
         replyId INTEGER NOT NULL,
         FOREIGN KEY (parentId) REFERENCES tweets(tweetId),
         FOREIGN KEY (replyId) REFERENCES tweets(tweetId)
+        PRIMARY KEY (parentId, replyId)
     );
     """
     tables.append(create_replies_table)

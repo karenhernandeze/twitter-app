@@ -53,6 +53,17 @@ class Database(metaclass=SingletonMeta):
                 return row
         except Error as e:
             print(f"Error '{e}' occurred")
+            
+    def execute_query_values_all(cls, query: str, values: tuple):
+        cursor = cls.connection.cursor()
+        try:
+            with cls.connection:
+                cursor.execute(query, values)
+                print("Query executed successfully")
+                rows = cursor.fetchall()
+                return rows
+        except Error as e:
+            print(f"Error '{e}' occurred")
 
     def execute_many_query(cls, query: str, data: list):
         cursor = cls.connection.cursor()

@@ -10,3 +10,6 @@ class TweetReply(BaseModel):
 
 class TweetOffset(BaseModel):
     offset: int
+
+class TweetID(BaseModel):
+    tweetId: int
