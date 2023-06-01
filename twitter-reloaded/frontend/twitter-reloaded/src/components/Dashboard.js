@@ -26,34 +26,33 @@ const Dashboard = ({ tweets }) => {
     const [totalPages, setTotalPages] = useState(1);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const replyIdsResponse = await ManageTweetsService.getReplyIds();
-                const replyIdsData = replyIdsResponse.data.data;
 
-                const totalTweetsResponse = await ManageTweetsService.retrieveAllTweets();
-                const totalTweetsData = totalTweetsResponse.data.data;
-                const filteredTweets = totalTweetsData.filter(
-                    tweet => !replyIdsData.includes(tweet.tweetId)
-                );
-                setTweets(filteredTweets);
-                console.log(filteredTweets)
-
-                const totalTweets = totalTweetsData.length;
-                const totalReplays = replyIdsData.length;
-                const paginationNum = Math.ceil((totalTweets - totalReplays) / 10);
-                setTotalPages(paginationNum);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
         fetchData();
     }, []);
 
-    // TODO CHANGE IT WHEN REPLIES OR NEW TWEET 
-    // useEffect(() => {
-    //     });
-    // }, [tweets]);
+    const fetchData = async () => {
+        try {
+            const replyIdsResponse = await ManageTweetsService.getReplyIds();
+            const replyIdsData = replyIdsResponse.data.data;
+
+            const totalTweetsResponse = await ManageTweetsService.retrieveAllTweets();
+            const totalTweetsData = totalTweetsResponse.data.data;
+            const filteredTweets = totalTweetsData.filter(
+                tweet => !replyIdsData.includes(tweet.tweetId)
+            );
+            setTweets(filteredTweets);
+            const totalTweets = totalTweetsData.length;
+            const totalReplays = replyIdsData.length;
+            const paginationNum = Math.ceil((totalTweets - totalReplays) / 10);
+            setTotalPages(paginationNum);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData()
+    }, [tweets]);
 
     const handleClickThread = (index, tweet) => {
         setSelectedIndexThread((prevIndex) => (prevIndex === index ? null : index));
