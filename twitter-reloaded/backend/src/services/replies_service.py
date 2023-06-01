@@ -1,4 +1,4 @@
-from sqlite3 import Row, Error
+from sqlite3 import Row
 from fastapi import HTTPException, status
 
 from ..crud.replies_crud import RepliesCRUD

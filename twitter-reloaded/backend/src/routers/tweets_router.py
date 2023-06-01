@@ -48,6 +48,7 @@ def latest(username: str):
         content={
             "status": status.HTTP_200_OK,
             "message": "Tweets retrieved successfully",
+            "user": user["username"],
             "data": encoded_tweets,
         },
     )
@@ -68,6 +69,7 @@ def offset_tweets(username: str, body: TweetOffset):
         content={
             "status": status.HTTP_200_OK,
             "message": "Tweets retrieved successfully",
+            "user": user["username"],
             "data": encoded_tweets,
         },
     )
@@ -87,6 +89,7 @@ def all_tweets(username: str):
         content={
             "status": status.HTTP_200_OK,
             "message": "All tweets retrieved successfully",
+            "user": user["username"],
             "data": encoded_tweets,
         },
     )
@@ -107,6 +110,7 @@ def replies(username: str, body: TweetID):
         content={
             "status": status.HTTP_200_OK,
             "message": "All tweets retrieved successfully",
+            "user": user["username"],
             "data": encoded_replies,
         },
     )
@@ -127,6 +131,7 @@ def reply(username: str, body: TweetReply):
         content={
             "status": status.HTTP_201_CREATED,
             "message": "Reply created successfully",
+            "user": user["username"],
             "data": encoded_reply,
         },
     )
