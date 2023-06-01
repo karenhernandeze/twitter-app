@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database.config import TwitterDB as db
 
-from .routers import tweets_router, users_router
+from .routers import tweets_router, users_router, events_router
+
+from event_dashboard.backend.src.database.config import EventsKV as kv
 
 
 app = FastAPI(title="Twitter Reloaded", version="0.1.0")
@@ -19,6 +21,7 @@ app.add_middleware(
 @app.on_event('shutdown')
 def shutdown_db_client():
     db.close_connection()
+    kv.close_connection()
 
 @app.get("/")
 def root():
@@ -26,6 +29,7 @@ def root():
 
 app.include_router(router=tweets_router.router)
 app.include_router(router=users_router.router)
+app.include_router(router=events_router.router)
 
 # import uvicorn
 
