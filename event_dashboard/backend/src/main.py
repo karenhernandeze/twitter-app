@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,6 +12,7 @@ from .routers import events_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    load_dotenv(".env", verbose=True)
     kv.create_connection()
     yield
     kv.close_connection()
