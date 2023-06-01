@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .database.config import TwitterDB as db
 
-from .routers import tweets_router
+from .routers import tweets_router, users_router
 
 
 app = FastAPI(title="Twitter Reloaded", version="0.1.0")
@@ -25,6 +25,7 @@ def root():
     return {"messsage" : "Welcome!"}
 
 app.include_router(router=tweets_router.router)
+app.include_router(router=users_router.router)
 
 # import uvicorn
 
