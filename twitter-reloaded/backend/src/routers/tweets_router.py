@@ -4,7 +4,8 @@ from fastapi.encoders import jsonable_encoder
 
 from ..services.users_service import UsersService
 from ..services.tweets_service import TweetsService
-from ..models.tweet_model import TweetContent, TweetOffset, TweetReply
+from ..services.replies_service import RepliesService
+from ..models.tweet_model import TweetContent, TweetOffset, TweetReply, TweetID
 
 
 router = APIRouter(
@@ -14,7 +15,7 @@ router = APIRouter(
 
 @router.post(
     "/{username}/new",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
     response_description="Create a new tweet",
 )
 def new_tweet(username: str, body: TweetContent):
@@ -87,5 +88,45 @@ def all_tweets(username: str):
             "status": status.HTTP_200_OK,
             "message": "All tweets retrieved successfully",
             "data": encoded_tweets,
+        },
+    )
+    
+@router.post(
+    "/{username}/replies",
+    status_code=status.HTTP_200_OK,
+    response_description="Get all tweet replies",
+)
+def replies(username: str, body: TweetID):
+    body = jsonable_encoder(body)
+    user = UsersService.user_by_name(username)
+    replies = RepliesService.tweet_replies(body["tweetId"])
+    encoded_replies = jsonable_encoder(replies)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "status": status.HTTP_200_OK,
+            "message": "All tweets retrieved successfully",
+            "data": encoded_replies,
+        },
+    )
+    
+@router.post(
+    "/{username}/reply",
+    status_code=status.HTTP_201_CREATED,
+    response_description="Insert tweet reply",
+)
+def reply(username: str, body: TweetReply):
+    body = jsonable_encoder(body)
+    user = UsersService.user_by_name(username)
+    reply = RepliesService.insert_reply(body["parentId"], body["replyId"])
+    encoded_reply = jsonable_encoder(reply)
+
+    return JSONResponse(
+        status_code=status.HTTP_201_CREATED,
+        content={
+            "status": status.HTTP_201_CREATED,
+            "message": "Reply created successfully",
+            "data": encoded_reply,
         },
     )
