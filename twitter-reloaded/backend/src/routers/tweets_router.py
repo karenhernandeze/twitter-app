@@ -142,3 +142,23 @@ def reply(username: str, body: TweetReply):
             "data": encoded_reply,
         },
     )
+    
+@router.get(
+    "/{username}/replyIds",
+    status_code=status.HTTP_200_OK,
+    response_description="Get all tweet reply ids",
+)
+def reply_ids(username: str):
+    user = UsersService.user_by_name(username)
+    reply_ids = RepliesService.tweet_reply_id_list()
+    encoded_reply_ids = jsonable_encoder(reply_ids)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "status": status.HTTP_200_OK,
+            "message": "All reply ids retrieved successfully",
+            "user": user["username"],
+            "data": encoded_reply_ids,
+        },
+    )

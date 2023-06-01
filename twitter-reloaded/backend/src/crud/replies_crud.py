@@ -23,3 +23,10 @@ class RepliesCRUD:
         values = (tweetId,)
         rows = db.execute_query_values_all(query, values)
         return rows
+    
+    def get_all_reply_ids():
+        query = """
+        SELECT DISTINCT replyId FROM replies;
+        """
+        rows = db.execute_query(query)
+        return rows

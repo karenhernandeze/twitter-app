@@ -28,3 +28,15 @@ class RepliesService():
             )
         
         return replies
+
+    def tweet_reply_id_list():
+        reply_list = RepliesCRUD.get_all_reply_ids()
+        
+        if reply_list is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="No replies found"
+            )
+            
+        reply_ids = [reply["replyId"] for reply in reply_list]
+        return reply_ids
