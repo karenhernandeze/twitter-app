@@ -6,17 +6,46 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import ManageTweetsService from '../service/ManageTweetsService';
 
-const NewTweet = () => {
+const NewTweet = ({dataUpdated}) => {
 
     const [open, setOpen] = React.useState(false);
+    const [inputText, setInputText] = React.useState('');
+    const [limitText, setLimitText] = React.useState(false);
+    const [invalidText, setInvalidText] = React.useState(false);
 
     const handleClickOpen = () => {
-        setOpen(true);
+        setOpen(!open);
+        setInputText('');
+        setLimitText(false)
     };
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleText = (event) => {
+        const text = event.target.value;
+        setInputText(text);
+        setInvalidText(false)
+        if (inputText.length >= 300) {
+            setLimitText(true)
+        } else {
+            setLimitText(false)
+        }
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (inputText === '') {
+            setInvalidText(true);
+        } else if (limitText === false) {
+            const tweet = {
+                content: inputText
+            }
+            ManageTweetsService.createTweet(tweet)
+                .then(response => {
+                    setOpen(!open);
+                    dataUpdated()
+                });
+        }
     };
 
     return (
@@ -33,21 +62,24 @@ const NewTweet = () => {
                 </Button>
             </Box>
 
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClickOpen}>
                 <DialogTitle>Start Tweeting</DialogTitle>
                 <DialogContent>
                     <TextField
-                        id="outlined-multiline-static"
-                        // label="Multiline"
+                        error={limitText || invalidText}
+                        id="new-tweet-text"
+                        onChange={handleText}
                         multiline
                         rows={4}
-                        defaultValue="Default Value"
+                        value={inputText}
+                        placeholder="What's happening?"
                         style={{ width: "500px" }}
+                        helperText={invalidText ? "Invalid Input" : limitText ? "300 max characters." : null}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Tweet</Button>
+                    <Button onClick={handleClickOpen}>Cancel</Button>
+                    <Button onClick={handleSubmit}>Tweet</Button>
                 </DialogActions>
             </Dialog>
         </div>
