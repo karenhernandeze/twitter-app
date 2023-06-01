@@ -7,8 +7,6 @@ def insert_new_action(userId: int, actionType: str):
     VALUES (?, ?)
     RETURNING *;
     """
-    #kv.create_connection()
     values = (userId, actionType)
     row = kv.execute_query_values(query,values)
-    #kv.close_connection()
     return dict(row)
