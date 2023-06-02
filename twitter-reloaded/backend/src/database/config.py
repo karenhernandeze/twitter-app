@@ -14,7 +14,7 @@ class SingletonMeta(type):
 
 class Database(metaclass=SingletonMeta):
     def __init__(cls):
-        cls.path: str = "./twitter-reloaded/backend/src/database/app.db"
+        cls.path: str = "./src/database/app.db"
         cls.connection: sqlite3.Connection = cls.create_connection()
 
     def create_connection(cls):

@@ -1,14 +1,23 @@
+from dotenv import load_dotenv
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from contextlib import asynccontextmanager
+
 from .database.config import TwitterDB as db
 
-from .routers import tweets_router, users_router, events_router
-
-from event_dashboard.backend.src.database.config import EventsKV as kv
+from .routers import tweets_router, users_router
 
 
-app = FastAPI(title="Twitter Reloaded", version="0.1.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_dotenv(".env", verbose=True)
+    db.create_connection()
+    yield
+    db.close_connection()
+
+app = FastAPI(title="Twitter Reloaded", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,18 +27,12 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.on_event('shutdown')
-def shutdown_db_client():
-    db.close_connection()
-    kv.close_connection()
-
 @app.get("/")
 def root():
     return {"messsage" : "Welcome!"}
 
 app.include_router(router=tweets_router.router)
 app.include_router(router=users_router.router)
-app.include_router(router=events_router.router)
 
 # import uvicorn
 
