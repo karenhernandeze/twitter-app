@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 
 import sqlite3
 from sqlite3 import Error
@@ -16,6 +17,7 @@ class SingletonMeta(type):
 
 class Events(metaclass=SingletonMeta):
     def __init__(cls):
+        load_dotenv(".env", verbose=True)
         cls.path: str = os.getenv("DB_EVENTS_PATH")
         cls.connection: sqlite3.Connection = cls.create_connection()
 
