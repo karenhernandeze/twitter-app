@@ -1,0 +1,22 @@
+version: 'version'
+services:
+  tweetsapi:
+    image: tweets-img
+    container_name: tweets-api
+    build:
+      context: "./twitter-reloaded/backend"
+      dockerfile: Dockerfile.tweets
+    depends_on:
+      - eventsapi
+    ports:
+      - "8080:8080"
+    init: true
+  eventsapi:
+    image: events-img
+    container_name: events-api
+    build:
+      context: "./event_dashboard/backend"
+      dockerfile: Dockerfile.events
+    ports:
+      - "8181:8181"
+    init: true
