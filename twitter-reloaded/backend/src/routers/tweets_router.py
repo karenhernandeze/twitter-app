@@ -112,7 +112,7 @@ def replies(username: str, body: TweetID):
         status_code=status.HTTP_200_OK,
         content={
             "status": status.HTTP_200_OK,
-            "message": "All tweets retrieved successfully",
+            "message": "Tweet replies retrieved successfully",
             "user": user["username"],
             "data": encoded_replies,
         },
