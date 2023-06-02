@@ -1,5 +1,3 @@
-import requests
-
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
@@ -8,6 +6,8 @@ from ..services.users_service import UsersService
 from ..services.tweets_service import TweetsService
 from ..services.replies_service import RepliesService
 from ..models.tweet_model import TweetContent, TweetOffset, TweetReply, TweetID
+
+from ..core.update_events import insert_action
 
 
 router = APIRouter(
@@ -24,7 +24,7 @@ def new_tweet(username: str, body: TweetContent):
     user = UsersService.user_by_name(username)
     new_tweet = TweetsService.insert_tweet(user, body["content"])
     encoded_tweet = jsonable_encoder(new_tweet)
-    # action = insert_new_action(user["userId"], "create")    
+    _action = insert_action(user["userId"], "create")
 
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
@@ -44,7 +44,7 @@ def latest(username: str):
     user = UsersService.user_by_name(username)
     tweets = TweetsService.latest_tweets()
     encoded_tweets = jsonable_encoder(tweets)
-    # action = insert_new_action(user["userId"], "open")
+    _action = insert_action(user["userId"], "open")
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
@@ -128,7 +128,7 @@ def reply(username: str, body: TweetReply):
     user = UsersService.user_by_name(username)
     reply = RepliesService.insert_reply(body["parentId"], body["replyId"])
     encoded_reply = jsonable_encoder(reply)
-    # action = insert_new_action(user["userId"], "reply")
+    _action = insert_action(user["userId"], "reply")
     
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
