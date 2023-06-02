@@ -20,3 +20,25 @@ services:
     ports:
       - "8181:8181"
     init: true
+  twitterapp:
+    image: frontend-img
+    container_name: twitter-app
+    build:
+      context: "./twitter-reloaded/frontend/twitter-reloaded"
+      dockerfile: Dockerfile
+    depends_on:
+      - tweetsapi
+    ports:
+      - "3000:3000"
+    init: true
+  dashboard:
+    image: dashboard-img
+    container_name: event-dashboard
+    build:
+      context: "./event_dashboard/frontend/event-dashboard"
+      dockerfile: Dockerfile
+    depends_on:
+      - eventsapi
+    ports:
+      - "3001:3001"
+    init: true
