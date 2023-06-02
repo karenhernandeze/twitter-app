@@ -1,5 +1,12 @@
 # Getting Started with Create React App
 
+## To Run This App With Dockerfile Follow The Next Commands:
+
+### `docker build -t twitter-reloaded . `
+### `docker run -p 3000:3000 twitter-reloaded `
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
