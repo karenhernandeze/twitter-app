@@ -3,42 +3,92 @@
 This monorepo contains four different projects: a simple **Twitter** clone, an **event dashboard** tracking the events of the former, and two **FastAPI backend services** for both of the applications.
 
 ## Usage
-1. Prior to executing anything, it is important to set the **environment variables** that each specific project uses for configuration. Following is the location where you need to create a `.env` file, with its respective path and environment variable names:
+1. Prior to executing anything, it is important to set the **environment variables** that each specific project uses for configuration. Following is a list of the `.env` files you need to create, with their respective path and environment variable names:
 
-    * `twitter-reloaded/backend` : 
+    * `twitter-reloaded/backend`
+        
+        * EVENTS_API_URL
+        * DB_TWEETS_PATH
 
-    * `event_dashboard/backend` : 
+    * `twitter-reloaded/frontend`
 
-    * `event_dashboard/backend` : 
+        * PORT
+        * REACT_APP_API_KEY
 
-    * `event_dashboard/frontend` : 
+    * `event_dashboard/backend`
 
+        * DB_EVENTS_PATH
 
-1. Choose a test file (or test files) from one of the files inside the `test/examples` directory of the project. 
+    * `event_dashboard/frontend`
 
-    * If you'd like to bring your own test file, be sure to put it inside of the `test/examples` directory. The file extension is irrelevant.
+        * PORT
+        * REACT_APP_API_KEY
+        * REACT_APP_API_KEY_2
 
-2. Run the `scanner.py` file as a module, specifying which test files you want to run. Depending on the alias of your Python installation, this can be either:
+2. Execute the following command to run all containers at once:
 
-    `python -m src.scanner.scanner {FILENAME} ... {FILENAME}`
-    
-    or 
+    `docker compose up -d --build`
 
-    `python3 -m src.scanner.scanner {FILENAME} ... {FILENAME}`
+    With that, all four project Dockerfile's have been built and launched.
 
-    In this case, if you wanted to run both `test3.cmm` and `test4.cmm` from the provided test files in the `test/examples directory`, the command would need to be:
+3. To access the services, visit their respective URL:
 
-    `python -m src.scanner.scanner test3.cmm test4.cmm`
+    * **Twitter Reloaded**: [`http://localhost:3000`](http://localhost:3000)
+    * **Event Dashboard**: [`http://localhost:3001`](http://localhost:3001)
+    * **Twitter Reloaded Backend**: [`http://localhost:8080`](http://localhost:8080)
+    * **Event Dashboard Backend**: [`http://localhost:8181`](http://localhost:8181)
 
-3. See the result of the scanning process on your terminal output. You will see the token identifier list as reference, the `output` list of all tokens with their identifiers, as well as all the `symbol_tables` with their respective entries.
+    You can also visit an interactive API documentation page for each of the backend services by visiting the `/docs` endpoint on each service respectively.
+
+    In order to switch the user that is currently logged in, you can change the URL subpath from `/guest` to one of the following registered users:
+
+    * `/guest`
+    * `/admin`
+    * `/karen`
+    * `/santi`
+    * `/mario`
+
+    For any other (not registered) user, tweets won't be displayed, and creating a new tweet will fail.
+
+4. To stop all containers, execute the following command:
+
+    `docker compose down`
+
+    If you want to execute the containers again without having to rebuild them every time, remove the `--build` flag from the `docker compose up` command.
 
 ## Testing
-1. Before running the test suite, make sure you run the following command on the base directory of the project to install the required testing dependencies:
+1. Before running the test suite, make sure you activate your Python virtual environment and run the following command on the backend directory of both projects to install the required testing dependencies:
 
     `python -m pip install -r requirements.txt`
 
-2. Now all you have to do is run the following command to execute unit testing on each of the 12 test files in the `test/examples` directory:
+2. Now all you have to do is run the following command to execute unit testing, executing the command once per backend directory:
 
     `python -m pytest -v`
 
-    * Just as before, if you'd like to test a specific source file, include it in the `test/examples` directory, and then create a new `test_{FILENAME}.py` file inside the `test/scripts` directory. After you've asserted what your test needs to return, just run the above command once again.
+## SOLID Principles
+
+Both each of the services and the system as a whole covers the five SOLID principles to their fullest extent. Next up we explain why this is the case for each principle.
+- __Single-responsibility__: The program complies given each of the classes has only one specific job (route requests, handle business logic, perform database operations, render components).
+- __Open-closed__: Because of the use of .env files, the program can be easily configured to run in different environments without having to modify the code.
+- __Liskov substitution__: Although we do not have child classes implemented in the system, all models can be replaced by the BaseModel class from which they directly inherit.
+- __Interface segregation__: All methods enforced in each one of the components of the application are used by the classes that implement them, and none of them are left unused.
+- __Dependency inversion__: None of the classes implemented throughout the program rely on previous concretions, allowing them to be decoupled and depend only on higher-level abstractions.
+
+## Design Patterns
+
+### Singleton (Creational)
+
+This pattern is used to ensure only a single instance of a class is created, and that it is globally accessible. It was implemented through the use of a centralized database class for each backend service, which is used by all other classes that need to perform database operations.
+
+### Proxy (Structural)
+
+With the use of a proxy, we control requests and objects throughout their whole lifecycle, updating or modifying them as needed. This pattern was implemented by setting middleware functions in all our requests, as well as managing the state of the application through startup and shutdown events.
+
+### Chain of responsibility (Behavioral)
+
+Lastly, this principle allows us to have multiple handlers decide the lifecycle of a request or action, passing the resulting object along to the next handler. This pattern was implemented by using a MVC architecture, where the request is first handled by the router, then by the service, and finally by the DAO, only to return the chain of objects all the way back to the router.
+
+## Contributors
+
+- [Karen Hernández](https://github.com/karenhernandeze)
+- [Santiago Alcérreca](https://github.com/santiadlv)
