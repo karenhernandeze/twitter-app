@@ -1,5 +1,17 @@
-version: 'version'
+version: '3'
 services:
+  eventsapi:
+    image: events-img
+    container_name: events-api
+    build:
+      context: "./event_dashboard/backend"
+      dockerfile: Dockerfile.events
+    ports:
+      - "8181:8181"
+    init: true
+    networks:
+      twitternet:
+        ipv4_address: 172.25.0.2
   tweetsapi:
     image: tweets-img
     container_name: tweets-api
@@ -11,34 +23,42 @@ services:
     ports:
       - "8080:8080"
     init: true
-  eventsapi:
-    image: events-img
-    container_name: events-api
-    build:
-      context: "./event_dashboard/backend"
-      dockerfile: Dockerfile.events
-    ports:
-      - "8181:8181"
-    init: true
+    networks:
+      twitternet:
+        ipv4_address: 172.25.0.3
   twitterapp:
     image: frontend-img
     container_name: twitter-app
     build:
-      context: "./twitter-reloaded/frontend/twitter-reloaded"
-      dockerfile: Dockerfile
+      context: "./twitter-reloaded/frontend"
+      dockerfile: Dockerfile.app
     depends_on:
       - tweetsapi
     ports:
       - "3000:3000"
     init: true
+    networks:
+      twitternet:
+        ipv4_address: 172.25.0.4
   dashboard:
     image: dashboard-img
     container_name: event-dashboard
     build:
-      context: "./event_dashboard/frontend/event-dashboard"
-      dockerfile: Dockerfile
+      context: "./event_dashboard/frontend"
+      dockerfile: Dockerfile.dash
     depends_on:
       - eventsapi
     ports:
       - "3001:3001"
     init: true
+    networks:
+      twitternet:
+        ipv4_address: 172.25.0.5
+
+networks:
+  twitternet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+          gateway: 172.25.0.1

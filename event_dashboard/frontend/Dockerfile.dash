@@ -20,7 +20,7 @@ RUN npm run build
 ENV NODE_ENV=production
 
 # Expose the port that the app will run on
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the React app
 CMD ["npm", "start"]
