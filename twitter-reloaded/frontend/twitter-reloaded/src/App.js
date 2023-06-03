@@ -9,11 +9,13 @@ function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    if (data.length === 0) {
-      ManageTweetsService.retrieveAllTweets()
-        .then(response => {
-          setData(response.data);
-        })
+    if (data){
+      if (data.length === 0) {
+        ManageTweetsService.retrieveAllTweets()
+          .then(response => {
+            setData(response.data);
+          })
+      }
     }
   }, [data]);
 
@@ -21,6 +23,7 @@ function App() {
     ManageTweetsService.retrieveAllTweets()
       .then(response => { setData(response.data) })
   }
+  
   return (
     <Grid container spacing={2} className='App'>
       <Grid item xs={12}>
@@ -33,7 +36,7 @@ function App() {
         <NewTweet dataUpdated={updateData} />
       </Grid>
       <Grid item xs={12}>
-        <Dashboard tweets={data} dataUpdated={updateData} />
+        <Dashboard tweets={data}/>
       </Grid>
     </Grid>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import Collapse from '@mui/material/Collapse';
-import { CardHeader, IconButton, ListItem, Pagination, Stack, TextField, responsiveFontSizes } from '@mui/material';
+import { CardHeader, IconButton, ListItem, Pagination, Stack, TextField } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -12,7 +12,6 @@ import ChatBubbleOutline from '@mui/icons-material/ChatBubbleOutline';
 import ChatBubble from '@mui/icons-material/ChatBubble';
 import SendIcon from '@mui/icons-material/Send';
 import ManageTweetsService from '../service/ManageTweetsService';
-import PaginationControlled from './PaginationControlled';
 
 const Dashboard = ({ tweets }) => {
     const [tweetsData, setTweets] = useState([]);
@@ -24,9 +23,9 @@ const Dashboard = ({ tweets }) => {
     const [invalidText, setInvalidText] = useState(false);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [usersData, setUsers] = useState([]);
 
     useEffect(() => {
-
         fetchData();
     }, []);
 
@@ -49,6 +48,29 @@ const Dashboard = ({ tweets }) => {
             console.error('Error fetching data:', error);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            let updatedUsers = { ...usersData };
+            for (let i = 1; i <= 5; ++i) {
+                const body = {
+                    userId: i
+                };
+                try {
+                    const response = await ManageTweetsService.getUsernameById(body);
+                    updatedUsers = {
+                        ...updatedUsers,
+                        [i]: response.data.data.username
+                    };
+                } catch (error) {
+                    console.log('Error fetching data:', error);
+                }
+            }
+            setUsers(updatedUsers);
+        };
+        fetchData();
+    }, []);
+
 
     useEffect(() => {
         fetchData()
@@ -112,6 +134,10 @@ const Dashboard = ({ tweets }) => {
     const endIndex = page * 10;
     const slicedTweetsData = tweetsData.slice(startIndex, endIndex);
 
+    const getKeyFromDictionary = (key) => {
+        return usersData[key];
+    };
+
     return (
         <div>
             <List>
@@ -123,7 +149,7 @@ const Dashboard = ({ tweets }) => {
                             <Card sx={{ width: 4 / 5 }}>
                                 <CardHeader
                                     avatar={<AccountCircle />}
-                                    title={tweet.userId}
+                                    title={getKeyFromDictionary(tweet.userId)}
                                     id={tweet.userId}
                                     subheader={tweet.createdAt}
                                 />
@@ -150,7 +176,7 @@ const Dashboard = ({ tweets }) => {
                                                             title={
                                                                 <React.Fragment>
                                                                     <Typography variant="body1" fontSize={16} color="text.secondary">
-                                                                        Karenhernandeze
+                                                                        {getKeyFromDictionary(reply.userId)}
                                                                         <IconButton>
                                                                             <AccountCircle fontSize="small" />
                                                                         </IconButton>
@@ -218,7 +244,6 @@ const Dashboard = ({ tweets }) => {
                 />
             </Stack>
         </div>
-
     );
 };
 
