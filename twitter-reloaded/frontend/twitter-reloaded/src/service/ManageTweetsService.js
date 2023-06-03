@@ -11,11 +11,19 @@ if (username === "") {
     window.history.replaceState(null, "", url);
 }
 
+const api = axios.create({
+    baseURL: apiKey,
+    withCredentials: false,
+    headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+    },
+});
+
 export class ManageTweetsService {
 
     async retrieveAllTweets() {
         try {
-            const data = await axios.get(`${apiKey}/api/${username}/allTweets`, { crossdomain: true })
+            const data = await api.get(`/api/${username}/allTweets`, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -25,7 +33,7 @@ export class ManageTweetsService {
 
     async retrieveLatestTweets() {
         try {
-            const data = axios.get(`${apiKey}/api/${username}/tweets`, { crossdomain: true })
+            const data = await api.get(`/api/${username}/tweets`, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -35,7 +43,7 @@ export class ManageTweetsService {
 
     async createTweet(body) {
         try {
-            const data = axios.post(`${apiKey}/api/${username}/new`, body, { crossdomain: true })
+            const data = await api.post(`/api/${username}/new`, body, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -45,7 +53,7 @@ export class ManageTweetsService {
 
     async retrieveReplies(tweetId) {
         try {
-            const data = axios.post(`${apiKey}/api/${username}/replies`, tweetId, { crossdomain: true })
+            const data = await api.post(`/api/${username}/replies`, tweetId, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -55,7 +63,7 @@ export class ManageTweetsService {
 
     async setAsReply(body) {
         try {
-            const data = axios.post(`${apiKey}/api/${username}/reply`, body, { crossdomain: true })
+            const data = await api.post(`/api/${username}/reply`, body, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -65,9 +73,7 @@ export class ManageTweetsService {
     
     async getUsernameById(body) {
         try {
-            console.log(body)
-            const data = axios.post(`${apiKey}/user/get`, body, { crossdomain: true })
-            console.log(data)
+            const data = await api.post(`/user/get`, body, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
@@ -77,8 +83,7 @@ export class ManageTweetsService {
 
     async getReplyIds() {
         try {
-            const data = await axios.get(`${apiKey}/api/${username}/replyIds`, { crossdomain: true })
-            console.log(data)
+            const data = await api.get(`/api/${username}/replyIds`, { crossdomain: true })
             return data;
         } catch (err) {
             console.log(err);
