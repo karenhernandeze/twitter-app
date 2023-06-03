@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -6,7 +5,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Unstable_Grid2';
-import { Card, CardContent } from '@mui/material';
 import Metrics from './components/Metrics';
 
 function App() {
