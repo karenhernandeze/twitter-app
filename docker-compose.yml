@@ -30,8 +30,8 @@ services:
     image: frontend-img
     container_name: twitter-app
     build:
-      context: "./twitter-reloaded/frontend/twitter-reloaded"
-      dockerfile: Dockerfile
+      context: "./twitter-reloaded/frontend"
+      dockerfile: Dockerfile.app
     depends_on:
       - tweetsapi
     ports:
@@ -44,8 +44,8 @@ services:
     image: dashboard-img
     container_name: event-dashboard
     build:
-      context: "./event_dashboard/frontend/event-dashboard"
-      dockerfile: Dockerfile
+      context: "./event_dashboard/frontend"
+      dockerfile: Dockerfile.dash
     depends_on:
       - eventsapi
     ports:
